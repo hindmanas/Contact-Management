@@ -10,8 +10,8 @@ const Index = () => {
 
   const handleAddSuccess = () => {
     toast({
-      title: "Contact Added",
-      description: "The contact has been successfully added to your directory.",
+      title: "✓ Contact Added Successfully",
+      description: "The contact has been added to your directory.",
     });
   };
 
@@ -25,8 +25,8 @@ const Index = () => {
 
   const handleDeleteSuccess = () => {
     toast({
-      title: "Contact Deleted",
-      description: "The contact has been successfully removed from your directory.",
+      title: "✓ Contact Deleted",
+      description: "The contact has been removed from your directory.",
     });
   };
 
@@ -40,9 +40,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Subtle background pattern */}
+      <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,hsl(var(--accent))_0%,transparent_50%)] opacity-50" />
+      
       <Header />
-      <main className="container mx-auto px-4 py-8">
-        <div className="mx-auto max-w-5xl space-y-8">
+      
+      <main className="container mx-auto px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl space-y-10">
           <ContactForm
             onSubmit={addContact}
             onSuccess={handleAddSuccess}
@@ -57,6 +61,15 @@ const Index = () => {
           />
         </div>
       </main>
+      
+      {/* Footer */}
+      <footer className="border-t border-border/50 bg-card/50 backdrop-blur-sm">
+        <div className="container mx-auto px-6 py-6">
+          <p className="text-center text-sm text-muted-foreground">
+            Contact Management System • Built with modern web technologies
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
