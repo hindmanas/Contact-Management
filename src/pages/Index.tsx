@@ -5,7 +5,7 @@ import { useContacts } from "@/hooks/useContacts";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
-  const { contacts, isLoading, addContact, deleteContact } = useContacts();
+  const { contacts, isLoading, addContact } = useContacts();
   const { toast } = useToast();
 
   const handleAddSuccess = () => {
@@ -16,21 +16,6 @@ const Index = () => {
   };
 
   const handleAddError = (message: string) => {
-    toast({
-      title: "Error",
-      description: message,
-      variant: "destructive",
-    });
-  };
-
-  const handleDeleteSuccess = () => {
-    toast({
-      title: "✓ Contact Deleted",
-      description: "The contact has been removed from your directory.",
-    });
-  };
-
-  const handleDeleteError = (message: string) => {
     toast({
       title: "Error",
       description: message,
@@ -55,9 +40,6 @@ const Index = () => {
           <ContactsTable
             contacts={contacts}
             isLoading={isLoading}
-            onDelete={deleteContact}
-            onDeleteSuccess={handleDeleteSuccess}
-            onDeleteError={handleDeleteError}
           />
         </div>
       </main>

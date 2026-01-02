@@ -1,7 +1,5 @@
-import { useState } from "react";
-import { Trash2, Loader2, Users, UserCircle } from "lucide-react";
+import { Loader2, Users, UserCircle, ShieldAlert } from "lucide-react";
 import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -11,53 +9,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { Contact } from "@/hooks/useContacts";
 
 interface ContactsTableProps {
   contacts: Contact[];
   isLoading: boolean;
-  onDelete: (id: string) => Promise<{ success: boolean; error?: string }>;
-  onDeleteSuccess: () => void;
-  onDeleteError: (message: string) => void;
 }
 
 export function ContactsTable({
   contacts,
   isLoading,
-  onDelete,
-  onDeleteSuccess,
-  onDeleteError,
 }: ContactsTableProps) {
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const handleDelete = async (id: string) => {
-    setDeletingId(id);
-    try {
-      const result = await onDelete(id);
-      if (result.success) {
-        onDeleteSuccess();
-      } else {
-        onDeleteError(result.error || "Failed to delete contact");
-      }
-    } catch {
-      onDeleteError("An unexpected error occurred");
-    } finally {
-      setDeletingId(null);
-    }
-  };
-
   if (isLoading) {
     return (
       <Card className="animate-fade-in border-border/50 shadow-elevated">
@@ -88,7 +52,7 @@ export function ContactsTable({
                 Contact Directory
               </CardTitle>
               <CardDescription className="text-base text-muted-foreground">
-                View and manage all your saved contacts
+                View all saved contacts
               </CardDescription>
             </div>
           </div>
@@ -97,6 +61,13 @@ export function ContactsTable({
             {contacts.length} {contacts.length === 1 ? "Contact" : "Contacts"}
           </Badge>
         </div>
+        
+        <Alert className="mt-4 border-amber-500/50 bg-amber-500/10">
+          <ShieldAlert className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="text-amber-700 dark:text-amber-400">
+            Contact deletion is restricted to authorized administrators only. Please contact the website owner to remove entries.
+          </AlertDescription>
+        </Alert>
       </CardHeader>
       <CardContent>
         {contacts.length === 0 ? (
@@ -119,7 +90,6 @@ export function ContactsTable({
                   <TableHead className="h-14 font-bold text-foreground">Phone</TableHead>
                   <TableHead className="h-14 font-bold text-foreground">Notes</TableHead>
                   <TableHead className="h-14 font-bold text-foreground">Added</TableHead>
-                  <TableHead className="h-14 text-right font-bold text-foreground">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -148,42 +118,6 @@ export function ContactsTable({
                       <Badge variant="outline" className="font-medium">
                         {format(new Date(contact.created_at), "MMM dd, yyyy")}
                       </Badge>
-                    </TableCell>
-                    <TableCell className="py-4 text-right">
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-9 w-9 rounded-lg p-0 text-muted-foreground opacity-0 transition-all duration-200 hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
-                            disabled={deletingId === contact.id}
-                          >
-                            {deletingId === contact.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Trash2 className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent className="border-border/50 shadow-elevated">
-                          <AlertDialogHeader>
-                            <AlertDialogTitle className="font-heading text-xl">Delete Contact</AlertDialogTitle>
-                            <AlertDialogDescription className="text-base">
-                              Are you sure you want to delete <strong className="text-foreground">{contact.name}</strong>? 
-                              This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel className="h-11">Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDelete(contact.id)}
-                              className="h-11 bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                            >
-                              Delete Contact
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 ))}
