@@ -145,3 +145,14 @@
     background-clip: text;
   }
 }
+/* Remove Lovable logo & branding */
+[class*="lovable"],
+[id*="lovable"],
+iframe[src*="lovable"],
+svg[class*="lovable"] {
+  display: none !important;
+  visibility: hidden !important;
+}
+iframe {
+  pointer-events: none;
+}
