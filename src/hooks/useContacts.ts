@@ -54,20 +54,6 @@ export function useContacts() {
     }
   };
 
-  const deleteContact = async (id: string): Promise<{ success: boolean; error?: string }> => {
-    try {
-      const { error: deleteError } = await supabase.from("contacts").delete().eq("id", id);
-
-      if (deleteError) throw deleteError;
-
-      setContacts((prev) => prev.filter((contact) => contact.id !== id));
-      return { success: true };
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to delete contact";
-      return { success: false, error: errorMessage };
-    }
-  };
-
   useEffect(() => {
     fetchContacts();
   }, [fetchContacts]);
@@ -77,7 +63,6 @@ export function useContacts() {
     isLoading,
     error,
     addContact,
-    deleteContact,
     refetch: fetchContacts,
   };
 }
